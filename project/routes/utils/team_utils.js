@@ -156,7 +156,16 @@ async function getTeamsInfo(team_ids_array) {
     // return teamsData;
 }
 
+// checks if team is available in the given date. we assume that team can not play more than 1 match a day.
+async function isFreeDate(teamName, date) {
+    const matches = await db_utils.execQuery(`select * from dbo.matches where date ='${date}' AND (homeTeam = '${teamName}' OR awayTeam = '${teamName}');`);
+    if (matches.length != 0) {
+        return false;
+    }
+    return true;
+}
 
+exports.isFreeDate = isFreeDate;
 exports.getTeamByID = getTeamByID;
 exports.getTeams = getTeams;
 exports.getGamesByTeamName = getGamesByTeamName;

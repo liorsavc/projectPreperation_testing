@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const league_utils = require("./utils/league_utils");
+const referee_utils = require("./utils/referee_utils");
 const matches_utils = require("./utils/matches_utils");
+const team_utils = require("./utils/matches_utils");
 const DB_utils = require("./utils/DButils");
 /**
  * Authenticate all incoming requests by middleware
@@ -60,6 +62,30 @@ router.post("/addMatch", async (req, res, next) => {
     const lineReferee2 = req.body.lineReferee2;
     const stadium = req.body.stadium;
     const matchId = await matches_utils.generateRandId();
+
+    //check if given teams has no other matches
+    if (!team_utils.isFreeDate(homeTeam, date)) {
+      throw { status: 400, message: homeTeam + " has another match at the same date!" };
+    }
+    if (!team_utils.isFreeDate(awayTeam, date)) {
+      throw { status: 400, message: awayTeam + " has another match at the same date!" };
+    }
+    //check that the stadium is free
+    if (!matches_utils.isFreeStadium(stadium, date)) {
+      throw { status: 400, message: stadium + " already hosts another match at the same date!" };
+    }
+
+    //check that chosen referee is availible at the chosen date:
+    if (!referee_utils.mainRefereeIsFree(refereeName, date)) {
+      throw { status: 400, message: refereeName + " already embedded to another match at the same date!" };
+    }
+
+    if (!referee_utils.lineRefereeIsFree(lineReferee1, date)) {
+      throw { status: 400, message: lineReferee1 + " already embedded to another match at the same date!" };
+    }
+    if (!referee_utils.lineRefereeIsFree(lineReferee2, date)) {
+      throw { status: 400, message: lineReferee2 + " already embedded to another match at the same date!" };
+    }
 
     // insert to DB
     await DB_utils.execQuery(

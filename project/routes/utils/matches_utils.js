@@ -100,6 +100,17 @@ async function getNextMatch() {
     return next_match;
 }
 
+
+// checks if stadium is available in the given date. we assume that stadium will not host more than 1 match a day.
+async function isFreeStadium(stadium, date) {
+    const matches = await db_utils.execQuery(`select * from dbo.matches where date ='${date}' AND stadium = '${stadium}';`);
+    if (matches.length != 0) {
+        return false;
+    }
+    return true;
+}
+
+exports.isFreeStadium = isFreeStadium;
 exports.getMatchIdsByTeam = getMatchIdsByTeam;
 exports.getMatchesInfo = getMatchesInfo;
 exports.getEventCalendar = getEventCalendar;
