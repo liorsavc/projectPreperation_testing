@@ -1,0 +1,8 @@
+{
+    "name": "projectpreperation_testing",
+    "scripts": {
+        "test": "jest"
+    },
+    "keywords": []
+    
+}

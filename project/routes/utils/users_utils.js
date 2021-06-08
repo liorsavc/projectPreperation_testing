@@ -1,5 +1,7 @@
 const DButils = require("./DButils");
 
+
+
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
     `insert into FavoritePlayers values ('${user_id}',${player_id})`
