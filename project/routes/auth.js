@@ -67,7 +67,7 @@ router.post("/Login", async (req, res, next) => {
 
     // check that username exists & the password is correct
 
-    let passwordCheck = auth_utils.checkPasswordHash(user.password,req.body.password)
+    let passwordCheck = await auth_utils.checkPasswordHash(user.password,req.body.password)
     if (!passwordCheck) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
