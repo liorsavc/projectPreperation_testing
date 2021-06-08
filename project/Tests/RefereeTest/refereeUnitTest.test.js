@@ -56,25 +56,25 @@ describe('Referees assigning usecase unit tests...', () => {
                 `INSERT INTO dbo.matches 
                 (leagueName,seasonName,stageName,homeTeam,awayTeam,refereeName,stadium,
                     homeScore,awayScore,date,time,id,lineReferee1,lineReferee2) VALUES
-                    ('SuperLiga','2020/2021','10th Stage','Hapoel Beer Sheva','Maccabi Tel Aviv,','Anthony Taylor','Terner',
-                    4,1,'2021-08-10','21:45','666','Jonathan Moss','Stuart Attwell')`
+                    ('SuperLiga','2020/2021','10th Stage','Hapoel Beer Sheva','Maccabi Tel Aviv,','Mike Dean','Terner',
+                    4,1,'2021-08-10','21:45','665','David Coote','Peter Bankes')`
             );
         })
 
         afterAll(async () => {
             await DButils.execQuery(
-                `DELETE FROM dbo.matches WHERE id = 666`
+                `DELETE FROM dbo.matches WHERE id = 665`
             );
         })
 
         test('Testing if Anthony Taylor is free on the 2021-08-10...', () => {
-            return referee_utils.mainRefereeIsFree('Anthony Taylor', '2021-08-10').then(data => {
+            return referee_utils.mainRefereeIsFree('Mike Dean', '2021-08-10').then(data => {
                 expect(data).toBeFalsy()
             })
         }, 30000)
 
         test('Testing if Anthony Taylor is free on the 2021-08-11...', () => {
-            return referee_utils.mainRefereeIsFree('Anthony Taylor', '2021-08-11').then(data => {
+            return referee_utils.mainRefereeIsFree('Mike Dean', '2021-08-11').then(data => {
                 expect(data).toBeTruthy()
             })
         }, 30000)
@@ -85,15 +85,15 @@ describe('Referees assigning usecase unit tests...', () => {
             })
         }, 30000)
 
-        // Jonathan Moss and Stuart Attwell have a match on the 2021-08-10
-        test('Testing if Jonathan Moss is free on the 2021-08-10...', () => {
-            return referee_utils.lineRefereeIsFree('Jonathan Moss', '2021-08-10').then(data => {
+        // David Coote and Peter Bankes have a match on the 2021-08-10
+        test('Testing if David Coote is free on the 2021-08-10...', () => {
+            return referee_utils.lineRefereeIsFree('David Coote', '2021-08-10').then(data => {
                 expect(data).toBeFalsy()
             })
         }, 30000)
 
-        test('Testing if Jonathan Moss is free on the 2021-08-10...', () => {
-            return referee_utils.lineRefereeIsFree('Stuart Attwell', '2021-08-10').then(data => {
+        test('Testing if Peter Bankes is free on the 2021-08-10...', () => {
+            return referee_utils.lineRefereeIsFree('Peter Bankes', '2021-08-10').then(data => {
                 expect(data).toBeFalsy()
             })
         }, 30000)
@@ -106,13 +106,13 @@ describe('Referees assigning usecase unit tests...', () => {
 
         // Jonathan Moss and Stuart Attwell dont have a match on the 2021-08-11
         test('Testing if Jonathan Moss is free on the 2021-08-11...', () => {
-            return referee_utils.lineRefereeIsFree('Jonathan Moss', '2021-08-11').then(data => {
+            return referee_utils.lineRefereeIsFree('Peter Bankes', '2021-08-11').then(data => {
                 expect(data).toBeTruthy()
             })
         }, 30000)
 
         test('Testing if Jonathan Moss is free on the 2021-08-11...', () => {
-            return referee_utils.lineRefereeIsFree('Stuart Attwell', '2021-08-11').then(data => {
+            return referee_utils.lineRefereeIsFree('David Coote', '2021-08-11').then(data => {
                 expect(data).toBeTruthy()
             })
         }, 30000)
