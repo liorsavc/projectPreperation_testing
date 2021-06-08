@@ -22,11 +22,18 @@ async function lineRefereeIsFree(refereeName, date) {
     return true;//len =0 
 }
 
-async function getReferees() {
-    const referees = await db_utils.execQuery(`select name from dbo.referees`);
+async function getMainReferees() {
+    const referees = await db_utils.execQuery(`select name from dbo.referees where role='main'`);
+    return referees;
+}
+
+
+async function getLineReferees() {
+    const referees = await db_utils.execQuery(`select name from dbo.referees where role='line'`);
     return referees;
 }
 
 exports.lineRefereeIsFree = lineRefereeIsFree;
 exports.mainRefereeIsFree = mainRefereeIsFree;
-exports.getReferees = getReferees;
+exports.getMainReferees = getMainReferees;
+exports.getLineReferees = getLineReferees;
