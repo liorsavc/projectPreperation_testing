@@ -1,0 +1,24 @@
+{
+  "name": "projectPreperation_testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^27.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liorsavc/projectPreperation_testing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liorsavc/projectPreperation_testing/issues"
+  },
+  "homepage": "https://github.com/liorsavc/projectPreperation_testing#readme"
+}
