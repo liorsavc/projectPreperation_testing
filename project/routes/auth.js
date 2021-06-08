@@ -4,6 +4,7 @@ const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
 const { select } = require("async");
 const MAX_USERS_IN_SYS = 25000;
+const auth_utils = require("./utils/auth_utils");
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
@@ -54,16 +55,20 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/Login", async (req, res, next) => {
   try {
-    const user = (
-      await DButils.execQuery(
-        `SELECT * FROM dbo.users WHERE username = '${req.body.username}'`
-      )
-    )[0];
+
+
+    // check if username exist 
+    let user = await auth_utils.getUser(req.body.username);
     // user = user[0];
+    if (!user){
+      throw { status: 401, message: "Username or Password incorrect" };
+    }
     console.log(user);
 
     // check that username exists & the password is correct
-    if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+
+    let passwordCheck = auth_utils.checkPasswordHash(user.password,req.body.password)
+    if (!passwordCheck) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 
