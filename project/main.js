@@ -100,3 +100,6 @@ const server = app.listen(port, () => {
 //     server.close(() => console.log("server closed"));
 //   }
 // });
+
+/// added for tests
+module.exports = app;
