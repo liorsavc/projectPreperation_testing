@@ -88,10 +88,9 @@ router.post("/addMatch", async (req, res, next) => {
     }
 
     // insert to DB
-    await DB_utils.execQuery(
-      `INSERT INTO dbo.matches (leagueName, seasonName, stageName, homeTeam, awayTeam, refereeName, lineReferee1, lineReferee2, stadium, date,time,id) VALUES
-       ('${leagueName}','${seasonName}','${stageName}','${homeTeam}','${awayTeam}', '${refereeName}','${lineReferee1}','${lineReferee2}','${stadium}','${date}','${time}','${matchId}');`
-    );
+
+    matches_utils.addMatchToDB(leagueName, seasonName, stageName, homeTeam, awayTeam, refereeName, lineReferee1, lineReferee2, stadium, date, time, matchId);
+
 
     res.status(201).send("match added successfully");
   } catch (error) {
