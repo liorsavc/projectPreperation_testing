@@ -109,6 +109,23 @@ async function isFreeStadium(stadium, date) {
     }
     return true;
 }
+// all stadiums in our DB , add match only with these stadiums
+async function getStadiums() {
+    let stadiums = await db_utils.execQuery("select name from dbo.stadiums;");
+    let stadiums_array = [];
+    stadiums.map((element) => stadiums_array.push(element.name))
+    return stadiums_array;
+
+
+}
+
+// void , dont need to check because only execute query to db_utils
+async function addMatchToDB(leagueName, seasonName, stageName, homeTeam, awayTeam, refereeName, lineReferee1, lineReferee2, stadium, date, time, matchId) {
+    await db_utils.execQuery(
+        `INSERT INTO dbo.matches (leagueName, seasonName, stageName, homeTeam, awayTeam, refereeName, lineReferee1, lineReferee2, stadium, date,time,id) VALUES
+         ('${leagueName}','${seasonName}','${stageName}','${homeTeam}','${awayTeam}', '${refereeName}','${lineReferee1}','${lineReferee2}','${stadium}','${date}','${time}','${matchId}');`
+    );
+}
 
 exports.isFreeStadium = isFreeStadium;
 exports.getMatchIdsByTeam = getMatchIdsByTeam;
@@ -116,3 +133,6 @@ exports.getMatchesInfo = getMatchesInfo;
 exports.getEventCalendar = getEventCalendar;
 exports.generateRandId = generateRandId;
 exports.getNextMatch = getNextMatch;
+
+exports.addMatchToDB = addMatchToDB;
+exports.getStadiums = getStadiums;

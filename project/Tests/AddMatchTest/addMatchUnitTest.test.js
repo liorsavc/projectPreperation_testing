@@ -50,3 +50,36 @@ describe('Match adding usecase unit tests...', () => {
     })
 
 });
+
+describe('Match adding usecase unit tests...', () => {
+    beforeAll(async () => {
+        await DButils.execQuery(
+            `INSERT INTO dbo.matches 
+            (leagueName,seasonName,stageName,homeTeam,awayTeam,refereeName,stadium,
+                homeScore,awayScore,date,time,id,lineReferee1,lineReferee2) VALUES
+                ('SuperLiga','2020/2021','10th Stage','Hapoel Beer Sheva','Maccabi Tel Aviv,','Anthony Taylor','Terner',
+                4,1,'2021-08-11','21:45','666','Jonathan Moss','Stuart Attwell')`
+        );
+
+    })
+
+    afterAll(async () => {
+        await DButils.execQuery(
+            `DELETE FROM dbo.matches WHERE id = 666`
+        );
+    })
+
+    test("Integration Test 1 - check that team is free and stadium is free", async () => {
+        const freeDate = await team_utils.isFreeDate('Horsens', '2021-08-11');
+        expect(freeDate).toBeTruthy();
+
+        let freeStadium = await matches_utils.isFreeStadium('Allianz Arena', '2021-08-11');
+        expect(freeStadium).toBeTruthy();
+
+    })
+
+
+
+})
+
+
