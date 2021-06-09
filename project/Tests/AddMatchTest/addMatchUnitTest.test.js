@@ -51,7 +51,7 @@ describe('Match adding usecase unit tests...', () => {
 
 });
 
-describe('Match adding usecase unit tests...', () => {
+describe('Match adding usecase Integration Tests...', () => {
     beforeAll(async () => {
         await DButils.execQuery(
             `INSERT INTO dbo.matches 
