@@ -9,7 +9,7 @@ const DButils = require("../../routes/utils/DButils");
 
 describe('prepration for testing', () => {
     let hash_password = bcrypt.hashSync(
-        "lior@123",
+        "lior@1234",
         parseInt(process.env.bcrypt_saltRounds)
     );
     let profilePic = "undefined";
@@ -18,52 +18,37 @@ describe('prepration for testing', () => {
     beforeAll(async () => {
         await DButils.execQuery(
             `INSERT INTO dbo.users (user_id, username, firstName, lastName, country, password, email, profilePic,role) VALUES
-       (-1,'lior1','tomer','varon','USA','${hash_password}','lior@lior.com','${profilePic}','${role}');`
+       (-2,'lior122','tomer','varon','USA','${hash_password}','lior@lior.com','${profilePic}','${role}');`
         );
     });
     //all
     afterAll(async () => {
         await DButils.execQuery(
-            `DELETE FROM dbo.users WHERE user_id = -1`
+            `DELETE FROM dbo.users WHERE user_id = -2`
         );
     });
 
 
 
-    test("Integration Test - first check if username exist and after check if password match - Good Pass", async () => {
-        const user = await auth_utils.getUser("lior1");
-        expect(user).toStrictEqual({
-            username: 'lior1',
-            firstName: 'tomer',
-            lastName: 'varon',
-            country: 'USA',
-            password: hash_password,
-            email: 'lior@lior.com',
-            profilePic: 'undefined',
-            user_id: -1,
-            role: 'undefined'
-        })
-        let validPass = await auth_utils.checkPasswordHash(hash_password, "lior@123");
-        expect(validPass).toBeTruthy();
+    test("Integration Test 1 - login func that uses 2 func(getUser and checkPassword)- valid username and password", async () => {
+        const validLogin = await auth_utils.login("lior122", "lior@1234");
+        expect(validLogin).toBeTruthy();
 
 
 
     })
-    test("Integration Test - first check if username exist and after check if password match - Wrong Pass", async () => {
-        const user = await auth_utils.getUser("lior1");
-        expect(user).toStrictEqual({
-            username: 'lior1',
-            firstName: 'tomer',
-            lastName: 'varon',
-            country: 'USA',
-            password: hash_password,
-            email: 'lior@lior.com',
-            profilePic: 'undefined',
-            user_id: -1,
-            role: 'undefined'
-        })
-        let validPass = await auth_utils.checkPasswordHash(hash_password, "lior@");
-        expect(validPass).not.toBeTruthy();
+
+    test("Integration Test 2 - login func that uses 2 func(getUser and checkPassword)- valid username and wrong password", async () => {
+        const validLogin = await auth_utils.login("lior122", "lior");
+        expect(validLogin).toBeFalsy();
+
+
+
+    })
+
+    test("Integration Test 3 - login func that uses 2 func(getUser and checkPassword)- wrong username that exist and valid password", async () => {
+        const validLogin = await auth_utils.login("lior", "lior@1234");
+        expect(validLogin).not.toBeTruthy();
 
 
 

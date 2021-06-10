@@ -56,21 +56,13 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
 
-
-    // check if username exist 
+    let validLogin = await auth_utils.login(req.body.username, req.body.password);
+    if (!validLogin) {
+      throw { status: 401, message: "Username or Password incorrect" };
+    }
     let user = await auth_utils.getUser(req.body.username);
-    // user = user[0];
-    if (!user){
-      throw { status: 401, message: "Username or Password incorrect" };
-    }
-    console.log(user);
 
-    // check that username exists & the password is correct
 
-    let passwordCheck = await auth_utils.checkPasswordHash(user.password,req.body.password)
-    if (!passwordCheck) {
-      throw { status: 401, message: "Username or Password incorrect" };
-    }
 
     // Set cookie
     req.session.user_id = user.user_id;
