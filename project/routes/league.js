@@ -34,68 +34,36 @@ router.use(async function (req, res, next) {
   }
 });
 
+router.use(async function (req, res, next) {
+  const user_id = req.session.user_id;
+  const role = await DB_utils.execQuery(`SELECT role FROM dbo.users where user_id ='${user_id}';`)
+  if (role[0].role == "asso_member") {
+    next();
+  }
+  else {
+    res.status(403).send("only association member can add new matches to the system!");
+  }
+});
+
 
 
 // add new match to DB by association member
 router.post("/addMatch", async (req, res, next) => {
   //check if logged user is association member role
+  //get data from body
+  const { leagueName, seasonName, stageName, homeTeam, awayTeam, date, time, refereeName, lineReferee1, lineReferee2, stadium } = req.body;
+  const matchId = await matches_utils.generateRandId();
+
   try {
-
-    if (req.session && req.session.user_id) {
-      const user_id = req.session.user_id;
-      const role = await DB_utils.execQuery(`SELECT role FROM dbo.users where user_id ='${user_id}';`)
-      if (role[0].role != "asso_member")
-        throw { status: 403, message: "only association member can add new matches to the system!" };
-
+    let addMatchResult = await league_utils.addMatch(leagueName, seasonName, stageName, homeTeam, awayTeam, date, time, refereeName, lineReferee1, lineReferee2, stadium, matchId);
+    if (addMatchResult) {
+      res.status(201).send("match added successfully");
     }
-
-    //get data from body
-    const leagueName = req.body.leagueName;
-    const seasonName = req.body.seasonName;
-    const stageName = req.body.stageName;
-    const homeTeam = req.body.homeTeam;
-    const awayTeam = req.body.awayTeam;
-    const date = req.body.date;
-    const time = req.body.time;
-    const refereeName = req.body.refereeName;
-    const lineReferee1 = req.body.lineReferee1;
-    const lineReferee2 = req.body.lineReferee2;
-    const stadium = req.body.stadium;
-    const matchId = await matches_utils.generateRandId();
-
-    //check if given teams has no other matches
-    if (!team_utils.isFreeDate(homeTeam, date)) {
-      throw { status: 400, message: homeTeam + " has another match at the same date!" };
-    }
-    if (!team_utils.isFreeDate(awayTeam, date)) {
-      throw { status: 400, message: awayTeam + " has another match at the same date!" };
-    }
-    //check that the stadium is free
-    if (!matches_utils.isFreeStadium(stadium, date)) {
-      throw { status: 400, message: stadium + " already hosts another match at the same date!" };
-    }
-
-    //check that chosen referee is availible at the chosen date:
-    if (!referee_utils.mainRefereeIsFree(refereeName, date)) {
-      throw { status: 400, message: refereeName + " already embedded to another match at the same date!" };
-    }
-
-    if (!referee_utils.lineRefereeIsFree(lineReferee1, date)) {
-      throw { status: 400, message: lineReferee1 + " already embedded to another match at the same date!" };
-    }
-    if (!referee_utils.lineRefereeIsFree(lineReferee2, date)) {
-      throw { status: 400, message: lineReferee2 + " already embedded to another match at the same date!" };
-    }
-
-    // insert to DB
-
-    matches_utils.addMatchToDB(leagueName, seasonName, stageName, homeTeam, awayTeam, refereeName, lineReferee1, lineReferee2, stadium, date, time, matchId);
-
-
-    res.status(201).send("match added successfully");
-  } catch (error) {
-    next(error);
   }
+  catch (err) {
+    next(err);
+  }
+
 });
 
 router.post("/updateMatchScore", async (req, res, next) => {

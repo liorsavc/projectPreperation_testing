@@ -3,7 +3,9 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const players_utils = require("./players_utils");
 const DButils = require("./DButils");
 const matches_utils = require("./matches_utils");
+const referee_utils = require("./referee_utils");
 const LEAGUE_ID = 271;
+
 
 async function getTeams(season_ID) {
     console.log("getTeams season_id: ", season_ID);
@@ -126,44 +128,18 @@ async function getTeamsInfo(team_ids_array) {
         teamsData.push(await getTeamByID(team_ids_array[i]));
     }
     return teamsData;
-    // let teamsData = [];
-    // let futureMatches = [];
-    // let prevMatches = [];
-    // for (let i = 0; i < team_ids_array.length; i++) {
-    //     const teamId = team_ids_array[i];
-    //     let team = await getTeam(teamId);
-    //     //get team games from local DB
-    //     const matchIdsObject = await matches_utils.getMatchIdsByTeam(team.data.data.name);
-    //     let matchIds = matchIdsObject[0];
-    //     if (matchIds.length == 0)
-    //         throw new Error("no matches for that team");
-    //     let matches = await matches_utils.getMatchesInfo(matchIds[0]);
-    //     let today = new Date();
-    //     matches.foreach(match => {
-    //         if (match.date > today)
-    //             futureMatches.push(match);
-    //         else
-    //             prevMatches.push(match);
-    //     })
-    //     teamsData.push({
-    //         players: team.squad,
-    //         prevMatches: prevMatches,
-    //         futureMatches: futureMatches,
-    //         name: team.name,
-    //         logoURL: team.logo_path,
-    //     });
-    // }
-    // return teamsData;
 }
 
 // checks if team is available in the given date. we assume that team can not play more than 1 match a day.
 async function isFreeDate(teamName, date) {
+    console.log(date);
     const matches = await DButils.execQuery(`select * from dbo.matches where date ='${date}' AND (homeTeam = '${teamName}' OR awayTeam = '${teamName}');`);
     if (matches.length != 0) {
         return false;
     }
     return true;
 }
+
 
 exports.isFreeDate = isFreeDate;
 exports.getTeamByID = getTeamByID;
