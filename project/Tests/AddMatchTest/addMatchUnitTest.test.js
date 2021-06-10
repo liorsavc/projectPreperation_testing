@@ -49,6 +49,16 @@ describe('Match adding usecase unit tests...', () => {
         })
     })
 
+    //testing matches_utils.generateRandId() - should return number to be assign to a match that dose not exist in matches DB 
+    test('Testing the auto generation match id', async () => {
+        let rndNumber = await matches_utils.generateRandId();
+        let isInDB = false;
+        //check that there is no match with the same ID in matches DB
+        let matchesWithRndNumber = await DButils.execQuery(`SELECT id FROM dbo.matches WHERE id = '${rndNumber}'`)
+        let numOfMatches = matchesWithRndNumber.length;
+        expect(numOfMatches).toBe(0);
+    })
+
 });
 
 
