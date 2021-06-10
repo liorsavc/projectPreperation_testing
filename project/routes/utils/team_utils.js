@@ -6,7 +6,12 @@ const matches_utils = require("./matches_utils");
 const referee_utils = require("./referee_utils");
 const LEAGUE_ID = 271;
 
-
+async function isSameTeam(homeTeam, awayTeam) {
+    if (homeTeam === awayTeam) {
+        return true;
+    }
+    return false;
+}
 async function getTeams(season_ID) {
     console.log("getTeams season_id: ", season_ID);
     let teams_unfilterd = await axios.get(`${api_domain}/teams/season/${season_ID}`, {
@@ -148,6 +153,7 @@ exports.getGamesByTeamName = getGamesByTeamName;
 // exports.getTeamByName = getTeamByName;
 exports.getTeam = getTeam;
 exports.getTeamsInfo = getTeamsInfo;
+exports.isSameTeam = isSameTeam;
 
 
 

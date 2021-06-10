@@ -59,6 +59,15 @@ describe('Match adding usecase unit tests...', () => {
         expect(numOfMatches).toBe(0);
     })
 
+    test('Testing if homeTeam and AwayTeam are different need to be true', async () => {
+        let is_same_team_true = await team_utils.isSameTeam("team1", "team1");
+        expect(is_same_team_true).toBeTruthy();
+    })
+    test('Testing if homeTeam and AwayTeam are different need to be false', async () => {
+        let is_same_team_false = await team_utils.isSameTeam("team1", "team2");
+        expect(is_same_team_false).toBeFalsy();
+    })
+
 });
 
 

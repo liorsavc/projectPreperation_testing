@@ -80,6 +80,9 @@ describe('Match adding usecase Integration Tests, all units are combined under a
 
         test('Integration Test 4 - Adding non exisitng game to the DB - should work...', async () => {
             let res = await league_utils.addMatch('SuperLiga', '2020/2021', '10th Stage', 'Hapoel Haifa', 'Baiter Jerusalem', '2021-09-11', '21:45', 'Andy Madley', 'Peter Bankes', 'Pual Tierney', 'Sami Offer', rndID)
+            expect(res).toBeTruthy();
+            let matchInDB = await DButils.execQuery(`SELECT * FROM dbo.matches WHERE id = '${rndID}'`)
+            expect(matchInDB).not.toBeNull();
         })
     })
 

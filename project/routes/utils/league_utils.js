@@ -68,6 +68,11 @@ async function getLeagueDetails() {
 
 async function addMatch(leagueName, seasonName, stageName, homeTeam, awayTeam, date, time, refereeName, lineReferee1, lineReferee2, stadium, matchId) {
   try {
+    // check if the teams are not the same
+    let SameTeams = await team_utils.isSameTeam(homeTeam, awayTeam);
+    if (SameTeams) {
+      throw { status: 400, message: "homeTeam and awayTeam are same team" };
+    }
     //check if given teams has no other matches
     let homeTeamFree = await team_utils.isFreeDate(homeTeam, date);
     if (!homeTeamFree) {
